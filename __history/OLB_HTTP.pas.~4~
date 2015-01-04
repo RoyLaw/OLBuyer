@@ -1,0 +1,26 @@
+unit OLB_HTTP;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, IdIOHandler, IdIOHandlerSocket,
+  IdIOHandlerStack, IdSSL, IdSSLOpenSSL, IdBaseComponent, IdComponent,
+  IdTCPConnection, IdTCPClient, IdHTTP, Vcl.StdCtrls, IdCookieManager,
+  Vcl.OleCtrls, SHDocVw;
+
+type
+  TBuyer = record
+    BuyerID : integer;               //本地账户ID
+    BuyerName : string;              //本地账户名称
+    StoreAccount : string;           //本地账户关联的网店账户用户名
+    StorePassword : string;          //本地账户关联的网店账户密码
+    StoreItemID : string;
+    StoreItemProperty : string;
+
+
+  end;
+
+implementation
+
+end.

@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, IdIOHandler, IdIOHandlerSocket,
   IdIOHandlerStack, IdSSL, IdSSLOpenSSL, IdBaseComponent, IdComponent,
-  IdTCPConnection, IdTCPClient, IdHTTP, Vcl.StdCtrls, IdCookieManager;
+  IdTCPConnection, IdTCPClient, IdHTTP, Vcl.StdCtrls, IdCookieManager,
+  Vcl.OleCtrls, SHDocVw;
 
 type
   TForm1 = class(TForm)
@@ -17,7 +18,8 @@ type
     Memo1: TMemo;
     Memo2: TMemo;
     IdCookieManager1: TIdCookieManager;
-    Button2: TButton;     //搞清楚Cookie的管理
+    Button2: TButton;
+    WebBrowser1: TWebBrowser;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   private
@@ -39,11 +41,12 @@ begin
   IdHTTP1.IOHandler := IdSSLIOHandlerSocketOpenSSL1;
   IdHTTP1.AllowCookies := TRUE;
 
-//Request.Header
+//Request Header
   IdHTTP1.Request.UserAgent := 'Mozilla/5.0 (Windows NT 6.1; rv:34.0) Gecko/20100101 Firefox/34.0';
   IdHTTP1.Request.Accept := 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
   IdHTTP1.Request.AcceptLanguage := 'en-us,zh-cn;q=0.7,en;q=0.3';
-  IdHTTP1.Request.AcceptEncoding := 'gzip, deflate';
+//  IdHTTP1.Request.AcceptEncoding := 'gzip, deflate';
+  IdHTTP1.Request.Connection := 'keep-alive';
 
 //Proxy Setting
 //  IdHTTP1.ProxyParams.ProxyServer := '127.0.0.1';
@@ -52,8 +55,10 @@ begin
 
   Memo1.Text := IdHTTP1.Get(Edit1.Text);
 
-  IdHTTP1.CookieManager.Create(nil);
-  Memo2.Text := IdHTTP1.CookieManager.CookieCollection.ToString;
+  Memo2.Text := IdHTTP1.CookieManager.CookieCollection.Cookies[0].ClientCookie;
+
+
+
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);

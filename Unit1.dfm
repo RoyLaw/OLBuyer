@@ -34,7 +34,7 @@ object Form1: TForm1
     Left = 152
     Top = 144
     Width = 513
-    Height = 153
+    Height = 65
     Lines.Strings = (
       'Memo1')
     ScrollBars = ssVertical
@@ -42,9 +42,9 @@ object Form1: TForm1
   end
   object Memo2: TMemo
     Left = 152
-    Top = 320
+    Top = 215
     Width = 513
-    Height = 89
+    Height = 50
     Lines.Strings = (
       'Memo2')
     ScrollBars = ssVertical
@@ -58,6 +58,19 @@ object Form1: TForm1
     Caption = 'Quit'
     TabOrder = 4
     OnClick = Button2Click
+  end
+  object WebBrowser1: TWebBrowser
+    Left = 152
+    Top = 280
+    Width = 513
+    Height = 150
+    TabOrder = 5
+    ControlData = {
+      4C00000005350000810F00000000000000000000000000000000000000000000
+      000000004C000000000000000000000001000000E0D057007335CF11AE690800
+      2B2E126208000000000000004C0000000114020000000000C000000000000046
+      8000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000100000000000000000000000000000000000000}
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True
