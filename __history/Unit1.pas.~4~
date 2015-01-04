@@ -38,21 +38,7 @@ begin
   IdSSLIOHandlerSocketOpenSSL1.SSLOptions.Method := sslvSSLv3;
   IdHTTP1.IOHandler := IdSSLIOHandlerSocketOpenSSL1;
   IdHTTP1.AllowCookies := TRUE;
-
-//Request.Header
-  IdHTTP1.Request.UserAgent := 'Mozilla/5.0 (Windows NT 6.1; rv:34.0) Gecko/20100101 Firefox/34.0';
-  IdHTTP1.Request.Accept := 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
-  IdHTTP1.Request.AcceptLanguage := 'en-us,zh-cn;q=0.7,en;q=0.3';
-  IdHTTP1.Request.AcceptEncoding := 'gzip, deflate';
-
-//Proxy Setting
-//  IdHTTP1.ProxyParams.ProxyServer := '127.0.0.1';
-//  IdHTTP1.ProxyParams.ProxyPort := 8080;
-
-
   Memo1.Text := IdHTTP1.Get(Edit1.Text);
-
-  IdHTTP1.CookieManager.Create(nil);
   Memo2.Text := IdHTTP1.CookieManager.CookieCollection.ToString;
 end;
 
