@@ -19,14 +19,14 @@ object Form1: TForm1
     Width = 121
     Height = 21
     TabOrder = 0
-    Text = 'Edit1'
+    Text = 'http://'
   end
   object Button1: TButton
     Left = 448
     Top = 64
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'Visit'
     TabOrder = 1
     OnClick = Button1Click
   end
@@ -37,6 +37,7 @@ object Form1: TForm1
     Height = 153
     Lines.Strings = (
       'Memo1')
+    ScrollBars = ssVertical
     TabOrder = 2
   end
   object Memo2: TMemo
@@ -46,7 +47,17 @@ object Form1: TForm1
     Height = 89
     Lines.Strings = (
       'Memo2')
+    ScrollBars = ssVertical
     TabOrder = 3
+  end
+  object Button2: TButton
+    Left = 560
+    Top = 64
+    Width = 75
+    Height = 25
+    Caption = 'Quit'
+    TabOrder = 4
+    OnClick = Button2Click
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True
