@@ -84,7 +84,7 @@ implementation
     FIdHTTP.CookieManager := FCookie;
     FIdHTTP.AllowCookies := TRUE;
     FIdHTTP.HandleRedirects := TRUE;
-    //完成HTTP REQ的设置
+    
   end;
 
 end.
