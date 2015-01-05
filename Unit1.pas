@@ -19,7 +19,6 @@ type
     Memo2: TMemo;
     IdCookieManager1: TIdCookieManager;
     Button2: TButton;
-    WebBrowser1: TWebBrowser;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   private
