@@ -63,7 +63,7 @@ implementation
     FreeOnTerminate := True;
   end;
 
-  procedure TWebAccess.Execute;        //考虑使用多线程，异步
+  procedure TWebAccess.Execute;
   begin
     try
       PlaceOrder;
@@ -105,11 +105,6 @@ implementation
   begin
     //Form1.Memo1.Lines.Add( '（' + IntToStr(FUser.ID) + '）' + FUser.UserName + '：' + TempMsg);
     Application.MessageBox(FTempInfo, 'ERROR',0);
-  end;
-
-  function TWebAccess.HTTPGetAction;
-  begin
-
   end;
 
 
