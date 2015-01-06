@@ -162,10 +162,9 @@ implementation
         Result := HTTPPostAction(URL, PostReqData, MaxRetryTime);
       end;
     finally
-      FIdHTTP.Disconnect;
-      FreeAndNil(ResponseData);
-      FreeAndNil(FOpenSSL);
+      MyClass.Free;
     end;
+
   end;
 
 end.

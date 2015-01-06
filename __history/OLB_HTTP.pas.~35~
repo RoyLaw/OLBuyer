@@ -127,7 +127,6 @@ implementation
             Result := '';
             Exit;
           end;
-          Result := HTTPGetAction(URL, MaxRetryTime);
       end;
     finally
       FreeAndNil(ResponseData);
@@ -152,20 +151,13 @@ implementation
         ResponseData.Position := 0;
 
         Result := PChar(ResponseData.Memory);      //强制指定为字符型指针，并返回该地址内容
-      except
-        Dec(MaxRetryTime);
-        if MaxRetryTime <= 0 then
-          begin
-            Result := '';
-            Exit;
-          end;
-        Result := HTTPPostAction(URL, PostReqData, MaxRetryTime);
+      finally
+        MyClass.Free;
       end;
     finally
-      FIdHTTP.Disconnect;
-      FreeAndNil(ResponseData);
-      FreeAndNil(FOpenSSL);
+      MyClass.Free;
     end;
+
   end;
 
 end.

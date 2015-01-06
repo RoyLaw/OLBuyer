@@ -3,9 +3,9 @@ unit OLB_HTTP;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Stdctrls,
   IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL, IdBaseComponent,
-  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, IdCookieManager, Vcl.Forms;
+  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, IdCookieManager, Vcl.Forms, IdMultipartFormData;
 
 type
   TBuyer = record                    //本地抢购账户
@@ -33,8 +33,8 @@ type
 
     procedure InitCookies;            //初始化Cookie
     procedure InitHTTP;               //初始化HTTP
-    function HTTPGetAction;           //HTTP GET
-    function HTTPPostAction;          //HTTP POST
+    function HTTPGetAction(URL : string; MaxRetryTime : integer) : string;           //HTTP GET
+    function HTTPPostAction(URL : string; PostReqData : TStringStream; MaxRetryTime : integer) : string;          //HTTP POST
     procedure PlaceOrder;             //下订单的过程
     procedure ShowError;              //错误提示
 
@@ -63,7 +63,7 @@ implementation
     FreeOnTerminate := True;
   end;
 
-  procedure TWebAccess.Execute;
+  procedure TWebAccess.Execute;        //考虑使用多线程，异步
   begin
     try
       PlaceOrder;
@@ -107,5 +107,24 @@ implementation
     Application.MessageBox(FTempInfo, 'ERROR',0);
   end;
 
+  function TWebAccess.HTTPGetAction(URL: string; MaxRetryTime: Integer) : string;
+  var
+    ResponseData : TStringStream;
+  begin
+    ResponseData := TStringStream.Create('');
+    FOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+    FOpenSSL.SSLOptions.Method := sslvSSLv3;
+
+    try
+      try
+        FIdHTTP.IOHandler := FOpenSSL;
+        FIdHTTP.Get(URL, ResponseData);
+      finally
+
+      end;
+    finally
+
+    end;
+  end;
 
 end.
