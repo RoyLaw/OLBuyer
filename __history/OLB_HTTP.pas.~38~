@@ -34,7 +34,7 @@ type
     procedure InitCookies;            //初始化Cookie
     procedure InitHTTP;               //初始化HTTP
     function HTTPGetAction(URL : string; MaxRetryTime : integer) : string;           //HTTP GET
-    function HTTPPostAction(URL : string; PostReqData : TStream; MaxRetryTime : integer) : string;          //HTTP POST
+    function HTTPPostAction(URL : string; PostReqData : TStringStream; MaxRetryTime : integer) : string;          //HTTP POST
     procedure PlaceOrder;             //下订单的过程
     procedure ShowError;              //错误提示
 
@@ -108,8 +108,64 @@ implementation
   end;
 
   function TWebAccess.HTTPGetAction(URL: string; MaxRetryTime: Integer) : string;
+  var
+    ResponseData : TStringStream;
   begin
+    ResponseData := TStringStream.Create('');
+    FOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+    FOpenSSL.SSLOptions.Method := sslvSSLv3;
 
+    try
+      try
+        FIdHTTP.IOHandler := FOpenSSL;
+        FIdHTTP.Get(URL, ResponseData);
+        Result := ResponseData.DataString;
+      except
+        Dec(MaxRetryTime);
+        if MaxRetryTime <= 0 then
+          begin
+            Result := '';
+            Exit;
+          end;
+          Result := HTTPGetAction(URL, MaxRetryTime);
+      end;
+    finally
+      FreeAndNil(ResponseData);
+      FreeAndNil(FOpenSSL);
+    end;
+  end;
+
+  function TWebAccess.HTTPPostAction(URL: string; PostReqData: TStringStream; MaxRetryTime: Integer) : string;
+  var
+    ResponseData : TMemoryStream;
+  begin
+    ResponseData := TMemoryStream.Create;
+    FOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+    FOpenSSL.SSLOptions.Method := sslvSSLv3;
+
+    try
+      try
+        if FIdHTTP = nil then Exit;
+        FIdHTTP.IOHandler := FOpenSSL;
+        FIdHTTP.Post(URL, PostReqData, ResponseData);
+        SetLength(Result, ResponseData);           //SetLength()设定数组长度
+        ResponseData.Position := 0;
+
+        Result := PChar(ResponseData.Memory);      //强制指定为字符型指针，并返回该地址内容
+      except
+        Dec(MaxRetryTime);
+        if MaxRetryTime <= 0 then
+          begin
+            Result := '';
+            Exit;
+          end;
+        Result := HTTPPostAction(URL, PostReqData, MaxRetryTime);
+      end;
+    finally
+      FIdHTTP.Disconnect;
+      FreeAndNil(ResponseData);
+      FreeAndNil(FOpenSSL);
+    end;
   end;
 
 end.
