@@ -202,7 +202,7 @@ begin
   Result := s;
 end;
 
-function TWebAccess.DecodeUTF8toAnsi(const UString: UTF8String): WideString;
+function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
 var
   lenSrc, lenDst: integer;
 begin
@@ -215,7 +215,7 @@ begin
     Pointer(Result), lenDst);
 end;
 
-function TWebAccess.GetAttributeByName(const HtmlText: string;
+function GetAttributeByName(const HtmlText: string;
   TagName, AttribName, KnownAttrName, KnowAttrValue: string): string;
   function FindFirstCharAfterSpace(const Line: string;
     StartPos: integer): integer;
@@ -375,7 +375,7 @@ begin
   end;
 end;
 
-function TWebAccess.ExtractHtmlTagValues(const HtmlText: string;
+function ExtractHtmlTagValues(const HtmlText: string;
   TagName, AttribName: string; var Values: TStringList): integer;
   function FindFirstCharAfterSpace(const Line: string;
     StartPos: integer): integer;
@@ -512,9 +512,8 @@ end;
 function GetValByName(s, Sub: string): string;
 var
   EleS, EleE, iPos: integer;
-  ELeStr, ValSt: string;
+  ELeStr, ValSt: String;
   St, Ct: integer;
-
   function FindEleRange(str: string; front: Boolean; posi: integer): integer;
   var
     i: integer;
@@ -538,7 +537,6 @@ var
         end;
     end;
   end;
-
   function FindEnd(str: string; posi: integer): integer;
   var
     i: integer;
@@ -581,7 +579,7 @@ begin
   Result := Copy(ELeStr, St, Ct);
 end;
 
-//如何取得网页中的所有连接，对代码做修改你也可以实现查找所有图片等等
+// 三、如何取得网页中的所有连接，对代码做修改你也可以实现查找所有图片等等
 function TWebAccess.GetURLList(Data: String): TStringList;
 var
   i: integer;

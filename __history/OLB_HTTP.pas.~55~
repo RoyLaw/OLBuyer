@@ -581,7 +581,7 @@ begin
   Result := Copy(ELeStr, St, Ct);
 end;
 
-//如何取得网页中的所有连接，对代码做修改你也可以实现查找所有图片等等
+// 三、如何取得网页中的所有连接，对代码做修改你也可以实现查找所有图片等等
 function TWebAccess.GetURLList(Data: String): TStringList;
 var
   i: integer;
