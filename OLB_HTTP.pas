@@ -103,11 +103,11 @@ end;
 
 procedure TWebAccess.InitCookies;
 var
-  URL : TIdURI;
+  Domain : TIdURI;
 begin
   // 登陆取得Cookie，然后添加必要内容
-  URL := TidURI.Create('nike.com');
-  FCookie.AddServerCookie('sth=value', URL);
+  Domain := TidURI.Create('nike.com');
+  FCookie.AddServerCookie('sth=value', Domain);
 end;
 
 procedure TWebAccess.PlaceOrder;

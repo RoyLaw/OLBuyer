@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Stdctrls, StrUtils,
   IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
-  IdBaseComponent,
+  IdBaseComponent, IdURI,
   IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, IdCookieManager, Vcl.Forms,
   IdMultipartFormData;
 
@@ -43,6 +43,7 @@ type
     procedure PlaceOrder; // 下订单的过程
     procedure ShowError; // 错误提示
     function DeleteHtmlTag(HtmlSource: string): string; // 删除HTML标签，提取网页内容
+    function GetURLList(Data: String): TStringList;
 
   protected
     { Protected declarations }
@@ -101,9 +102,12 @@ begin
 end;
 
 procedure TWebAccess.InitCookies;
+var
+  URL : TIdURI;
 begin
   // 登陆取得Cookie，然后添加必要内容
-  FCookie.AddServerCookie('sth=value', 'nike.com');
+  URL := TidURI.Create('nike.com');
+  FCookie.AddServerCookie('sth=value', URL);
 end;
 
 procedure TWebAccess.PlaceOrder;
@@ -117,7 +121,7 @@ end;
 procedure TWebAccess.ShowError;
 begin
   // Form1.Memo1.Lines.Add( '（' + IntToStr(FUser.ID) + '）' + FUser.UserName + '：' + TempMsg);
-  Application.MessageBox(FTempInfo, 'ERROR', 0);
+  Application.MessageBox(Pchar(FTempInfo), PChar('ERROR'), 0);
 end;
 
 function TWebAccess.HTTPGetAction(URL: string; MaxRetryTime: integer): string;
@@ -163,7 +167,7 @@ begin
         Exit;
       FIdHTTP.IOHandler := FOpenSSL;
       FIdHTTP.Post(URL, PostReqData, ResponseData);
-      SetLength(Result, ResponseData); // SetLength()设定数组长度
+      SetLength(Result, ResponseData.Size); // SetLength()设定数组长度
       ResponseData.Position := 0;
 
       Result := PChar(ResponseData.Memory); // 强制指定为字符型指针，并返回该地址内容
@@ -198,7 +202,7 @@ begin
   Result := s;
 end;
 
-function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
+function TWebAccess.DecodeUTF8toAnsi(const UString: UTF8String): WideString;
 var
   lenSrc, lenDst: integer;
 begin
@@ -211,7 +215,7 @@ begin
     Pointer(Result), lenDst);
 end;
 
-function GetAttributeByName(const HtmlText: string;
+function TWebAccess.GetAttributeByName(const HtmlText: string;
   TagName, AttribName, KnownAttrName, KnowAttrValue: string): string;
   function FindFirstCharAfterSpace(const Line: string;
     StartPos: integer): integer;
@@ -371,7 +375,7 @@ begin
   end;
 end;
 
-function ExtractHtmlTagValues(const HtmlText: string;
+function TWebAccess.ExtractHtmlTagValues(const HtmlText: string;
   TagName, AttribName: string; var Values: TStringList): integer;
   function FindFirstCharAfterSpace(const Line: string;
     StartPos: integer): integer;
@@ -508,8 +512,9 @@ end;
 function GetValByName(s, Sub: string): string;
 var
   EleS, EleE, iPos: integer;
-  ELeStr, ValSt: String;
+  ELeStr, ValSt: string;
   St, Ct: integer;
+
   function FindEleRange(str: string; front: Boolean; posi: integer): integer;
   var
     i: integer;
@@ -533,6 +538,7 @@ var
         end;
     end;
   end;
+
   function FindEnd(str: string; posi: integer): integer;
   var
     i: integer;
@@ -573,6 +579,80 @@ begin
   St := iPos + Length(ValSt);
   Ct := FindEnd(ELeStr, St) - St + 1;
   Result := Copy(ELeStr, St, Ct);
+end;
+
+//如何取得网页中的所有连接，对代码做修改你也可以实现查找所有图片等等
+function TWebAccess.GetURLList(Data: String): TStringList;
+var
+  i: integer;
+  List: TStringList;
+  tmp: String;
+  function Split(Data, Node: String): TStringList;
+  var
+    Count, i, j: integer;
+    function GetFieldCount(Data, Node: String): integer;
+    var
+      i: integer;
+    begin
+      Result := -1;
+      i := pos(Node, Data);
+      if i = 0 then
+        Exit;
+      Result := 0;
+      while i <> 0 do
+      begin
+        inc(Result);
+        delete(Data, 1, i + Length(Node) - 1);
+        i := pos(Node, Data);
+      end;
+    end;
+
+  begin
+    Result := TStringList.Create;
+    Count := GetFieldCount(Data, Node);
+    for i := 0 to Count - 1 do
+    begin
+      j := pos(Node, Data);
+      Result.Add(Copy(Data, 1, j - 1));
+      delete(Data, 1, j + Length(Node) - 1);
+    end;
+    Result.Add(Data);
+  end;
+
+begin
+  Result := TStringList.Create;
+  try
+    List := Split(Data, 'href=');
+    for i := 1 to List.Count - 1 do
+    begin
+      tmp := List[i];
+      tmp := Copy(tmp, 0, pos('</a>', tmp) - 1);
+      tmp := Copy(tmp, 0, pos('>', tmp) - 1);
+      if pos(' ', tmp) <> 0 then
+        tmp := Copy(tmp, 0, pos(' ', tmp) - 1);
+      tmp := StringReplace(tmp, char(34), '', [rfReplaceAll, rfIgnoreCase]);
+      tmp := StringReplace(tmp, char(39), '', [rfReplaceAll, rfIgnoreCase]);
+      // TVarCompareResult
+      // error if not Compare(CI.Key, tmp) then Continue;
+      if Copy(tmp, 1, 7) <> 'http://' then
+      begin
+        if Copy(tmp, 1, 1) = '.' then
+          tmp := StringReplace(tmp, '.', '', []);
+        if Copy(tmp, 1, 1) = '.' then
+          tmp := StringReplace(tmp, '.', '', []);
+        try
+          tmp := 'http://' + FIdHTTP.URL.Host + ':' + FIdHTTP.URL.Port +
+            FIdHTTP.URL.Path + tmp;
+        except
+        end;
+      end;
+      if Result.IndexOf(tmp) <> -1 then
+        continue;
+      Result.Add(tmp);
+    end;
+    FreeAndNil(List);
+  except
+  end;
 end;
 
 end.

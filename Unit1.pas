@@ -4,11 +4,11 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
+  System.Classes, Vcl.Graphics,StrUtils,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, IdIOHandler, IdIOHandlerSocket,
   IdIOHandlerStack, IdSSL, IdSSLOpenSSL, IdBaseComponent, IdComponent,
   IdTCPConnection, IdTCPClient, IdHTTP, Vcl.StdCtrls, IdCookieManager,
-  Vcl.OleCtrls, SHDocVw;
+  Vcl.OleCtrls, SHDocVw, IdMultipartFormData;
 
 type
   TForm1 = class(TForm)
@@ -36,6 +36,9 @@ implementation
 {$R *.dfm}
 
 procedure TForm1.Button1Click(Sender: TObject);
+var
+  Params :TStrings;
+  i :integer;
 begin
   IdSSLIOHandlerSocketOpenSSL1.SSLOptions.Method := sslvSSLv3;
   IdHTTP1.IOHandler := IdSSLIOHandlerSocketOpenSSL1;
@@ -51,12 +54,20 @@ begin
   IdHTTP1.Request.Connection := 'keep-alive';
 
   // Proxy Setting
-  // IdHTTP1.ProxyParams.ProxyServer := '127.0.0.1';
-  // IdHTTP1.ProxyParams.ProxyPort := 8080;
+//   IdHTTP1.ProxyParams.ProxyServer := '127.0.0.1';
+//   IdHTTP1.ProxyParams.ProxyPort := 8080;
 
-  Memo1.Text := IdHTTP1.Get(Edit1.Text);
+//  Memo1.Text := IdHTTP1.Get(Edit1.Text);
 
-  Memo2.Text := IdHTTP1.CookieManager.CookieCollection.Cookies[0].ClientCookie;
+  Params := TStringList.Create;
+  Params.Add('login=only4reg@126.com');
+  Params.Add('rememberMe=false');
+  Params.Add('password=NikePlus360');
+
+  Memo1.Text := IdHTTP1.Post(Edit1.Text, Params);
+
+  for i := 0 to IdHTTP1.CookieManager.CookieCollection.Count -1 do
+  Memo2.Text := Memo2.Text + #13#10 +IdHTTP1.CookieManager.CookieCollection.Cookies[i].ClientCookie;
 
 end;
 
