@@ -13,38 +13,10 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
-    Left = 32
-    Top = 24
-    Width = 51
-    Height = 13
-    Caption = 'Login Addr'
-  end
-  object Label2: TLabel
-    Left = 32
-    Top = 69
-    Width = 48
-    Height = 13
-    Caption = 'Username'
-  end
-  object Label3: TLabel
-    Left = 220
-    Top = 69
-    Width = 46
-    Height = 13
-    Caption = 'Password'
-  end
-  object Label4: TLabel
-    Left = 32
-    Top = 104
-    Width = 47
-    Height = 13
-    Caption = 'productId'
-  end
   object Edit1: TEdit
-    Left = 120
-    Top = 21
-    Width = 305
+    Left = 192
+    Top = 64
+    Width = 121
     Height = 21
     TabOrder = 0
     Text = 'https://www.nike.com/profile/login?Content-Locale=zh_CN'
@@ -54,7 +26,7 @@ object Form1: TForm1
     Top = 64
     Width = 75
     Height = 25
-    Caption = 'Login'
+    Caption = 'Visit'
     TabOrder = 1
     OnClick = Button1Click
   end
@@ -86,40 +58,6 @@ object Form1: TForm1
     Caption = 'Quit'
     TabOrder = 4
     OnClick = Button2Click
-  end
-  object Edit2: TEdit
-    Left = 86
-    Top = 66
-    Width = 121
-    Height = 21
-    TabOrder = 5
-    Text = 'only4reg@126.com'
-  end
-  object Edit3: TEdit
-    Left = 272
-    Top = 66
-    Width = 121
-    Height = 21
-    PasswordChar = '*'
-    TabOrder = 6
-    Text = 'NikePlus360'
-  end
-  object Edit4: TEdit
-    Left = 86
-    Top = 101
-    Width = 121
-    Height = 21
-    TabOrder = 7
-    Text = '10091109'
-  end
-  object Button3: TButton
-    Left = 272
-    Top = 99
-    Width = 75
-    Height = 25
-    Caption = 'Order'
-    TabOrder = 8
-    OnClick = Button3Click
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True

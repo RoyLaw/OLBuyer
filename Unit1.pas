@@ -20,8 +20,17 @@ type
     Memo2: TMemo;
     IdCookieManager1: TIdCookieManager;
     Button2: TButton;
+    Edit2: TEdit;
+    Edit3: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Edit4: TEdit;
+    Button3: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -60,9 +69,9 @@ begin
   // Memo1.Text := IdHTTP1.Get(Edit1.Text);
 
   Params := TStringList.Create;
-  Params.Add('login=only4reg@126.com');
+  Params.Add('login=' + Edit2.Text);
   Params.Add('rememberMe=false');
-  Params.Add('password=NikePlus360');
+  Params.Add('password=' + Edit3.Text);
 
   try
     Memo1.Text := IdHTTP1.Post(Edit1.Text, Params);
@@ -82,6 +91,28 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);
 begin
   Application.Terminate;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  ResponseData: TStringStream;
+  i: integer;
+begin
+  try
+    IdHTTP1.Request.Referer := 'http://store.nike.com/cn/zh_cn/pd/';
+    Memo1.Text := IdHTTP1.Get
+      ('https://secure-store.nike.com/ap/services/jcartService?callback=nike_Cart_hanleJCartResponse&action=addItem&lang_locale=zh_CN&country=CN&catalogId=4&productId='
+      + Edit4.Text +
+      '&price=1699.0&siteId=null&line1=Air+Jordan+XX9&line2=%E7%94%B7%E5%AD%90%E7%AF%AE%E7%90%83%E9%9E%8B&passcode=null&sizeType=null&skuAndSize=10702226%3A40.5&qty=1&rt=&view=3&skuId=10702226&displaySize=40.5&_=1420792220969');
+  except
+    on E: Exception do
+    begin
+      Memo1.Text := 'ERR:' + E.Message;
+    end;
+  end;
+    for i := 0 to IdHTTP1.CookieManager.CookieCollection.Count - 1 do
+    Memo2.Text := Memo2.Text + #13#10 + IdHTTP1.CookieManager.CookieCollection.
+      Cookies[i].ClientCookie;
 end;
 
 end.
