@@ -28,12 +28,13 @@ type
     Label4: TLabel;
     Edit4: TEdit;
     Button3: TButton;
-    procedure Button1Click(Sender: TObject);
+
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
   private
     { Private declarations }
   public
+    procedure Button1Click(Sender: TObject);
     { Public declarations }
   end;
 
