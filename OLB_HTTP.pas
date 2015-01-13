@@ -40,6 +40,7 @@ type
     // HTTP GET
     function HTTPPostAction(URL: string; PostReqData: TStringStream;
       MaxRetryTime: integer): string; // HTTP POST
+    procedure PlaceOrder; // 下订单的过程
     procedure ShowError; // 错误提示
     function DeleteHtmlTag(HtmlSource: string): string; // 删除HTML标签，提取网页内容
     function GetURLList(Data: String): TStringList;
@@ -53,9 +54,6 @@ type
     property ThreadID: integer read FThreadID write FThreadID;
     constructor Create(CreateSuspended: Boolean; ID: integer;
       Buyer: TBuyer); overload;
-
-    procedure PlaceOrder; // 下订单的过程
-
     function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
     // UTF8-ANSI编码转换
     function ExtractHtmlTagValues(const HtmlText: string;
@@ -105,10 +103,10 @@ end;
 
 procedure TWebAccess.InitCookies;
 var
-  Domain: TIdURI;
+  Domain : TIdURI;
 begin
   // 登陆取得Cookie，然后添加必要内容
-  Domain := TIdURI.Create('nike.com');
+  Domain := TidURI.Create('nike.com');
   FCookie.AddServerCookie('sth=value', Domain);
 end;
 
@@ -123,7 +121,7 @@ end;
 procedure TWebAccess.ShowError;
 begin
   // Form1.Memo1.Lines.Add( '（' + IntToStr(FUser.ID) + '）' + FUser.UserName + '：' + TempMsg);
-  Application.MessageBox(Pchar(FTempInfo), Pchar('ERROR'), 0);
+  Application.MessageBox(Pchar(FTempInfo), PChar('ERROR'), 0);
 end;
 
 function TWebAccess.HTTPGetAction(URL: string; MaxRetryTime: integer): string;
@@ -172,7 +170,7 @@ begin
       SetLength(Result, ResponseData.Size); // SetLength()设定数组长度
       ResponseData.Position := 0;
 
-      Result := Pchar(ResponseData.Memory); // 强制指定为字符型指针，并返回该地址内容
+      Result := PChar(ResponseData.Memory); // 强制指定为字符型指针，并返回该地址内容
     except
       Dec(MaxRetryTime);
       if MaxRetryTime <= 0 then
@@ -583,7 +581,7 @@ begin
   Result := Copy(ELeStr, St, Ct);
 end;
 
-// 如何取得网页中的所有连接，对代码做修改你也可以实现查找所有图片等等
+//如何取得网页中的所有连接，对代码做修改你也可以实现查找所有图片等等
 function TWebAccess.GetURLList(Data: String): TStringList;
 var
   i: integer;
