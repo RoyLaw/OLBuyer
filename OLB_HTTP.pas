@@ -42,6 +42,14 @@ type
       MaxRetryTime: integer): string; // HTTP POST
     function DeleteHtmlTag(HtmlSource: string): string; // 删除HTML标签，提取网页内容
     function GetURLList(Data: String): TStringList;
+    function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
+    // UTF8-ANSI编码转换
+    function ExtractHtmlTagValues(const HtmlText: string;
+      TagName, AttribName: string; var Values: TStringList): integer;
+    // 取得HTML标签对应值
+    function GetAttributeByName(const HtmlText: string;
+      TagName, AttribName, KnownAttrName, KnowAttrValue: string): string;
+    // 用已知的属性值取另外一个属性值
 
   protected
     { Protected declarations }
@@ -56,15 +64,6 @@ type
     function PlaceOrder(curUser: TBuyer; curItem: TStoreItem): string;
     // 下订单的过程
     procedure ShowError; // 错误提示
-
-    function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
-    // UTF8-ANSI编码转换
-    function ExtractHtmlTagValues(const HtmlText: string;
-      TagName, AttribName: string; var Values: TStringList): integer;
-    // 取得HTML标签对应值
-    function GetAttributeByName(const HtmlText: string;
-      TagName, AttribName, KnownAttrName, KnowAttrValue: string): string;
-    // 用已知的属性值取另外一个属性值
 
   end;
 
