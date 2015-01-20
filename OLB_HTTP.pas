@@ -119,6 +119,10 @@ function TWebAccess.PlaceOrder(curUser: TBuyer; curItem: TStoreItem): string;
 var
   Params: TStrings;
   i: integer;
+  bufHTML: string;
+  bufLinks: TStringList;
+  bufLinkAmount: integer;
+  tempResult: string;
 
 begin
   // µÇÂ½
@@ -161,8 +165,16 @@ begin
   FIdHTTP.Request.Referer := 'http://store.nike.com/cn/zh_cn/pd/';
 
   try
-    Result := FIdHTTP.Get
+    tempResult := '';
+    bufHTML := FIdHTTP.Get
       ('http://store.nike.com/cn/zh_cn/pd/lebron-12-ep-%E7%AF%AE%E7%90%83%E9%9E%8B/pid-10091562/pgid-10284314');
+    bufLinks := TStringList.Create;
+    bufLinkAmount := ExtractHtmlTagValues(bufHTML, 'A', 'HREF', bufLinks);
+    for i := 0 to bufLinkAmount - 1 do
+    begin
+      tempResult := tempResult + bufLinks[i] + #13#10;
+    end;
+    Result := tempResult;
   except
     on E: Exception do
     begin

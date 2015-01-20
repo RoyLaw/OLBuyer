@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Stdctrls, StrUtils,
+  System.Classes, Vcl.Stdctrls, StrUtils, Dialogs,
   IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
   IdBaseComponent, IdURI,
   IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, IdCookieManager, Vcl.Forms,
@@ -40,10 +40,16 @@ type
     // HTTP GET
     function HTTPPostAction(URL: string; PostReqData: TStringStream;
       MaxRetryTime: integer): string; // HTTP POST
-    procedure PlaceOrder; // 下订单的过程
-    procedure ShowError; // 错误提示
     function DeleteHtmlTag(HtmlSource: string): string; // 删除HTML标签，提取网页内容
     function GetURLList(Data: String): TStringList;
+    function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
+    // UTF8-ANSI编码转换
+    function ExtractHtmlTagValues(const HtmlText: string;
+      TagName, AttribName: string; var Values: TStringList): integer;
+    // 取得HTML标签对应值
+    function GetAttributeByName(const HtmlText: string;
+      TagName, AttribName, KnownAttrName, KnowAttrValue: string): string;
+    // 用已知的属性值取另外一个属性值
 
   protected
     { Protected declarations }
@@ -54,14 +60,10 @@ type
     property ThreadID: integer read FThreadID write FThreadID;
     constructor Create(CreateSuspended: Boolean; ID: integer;
       Buyer: TBuyer); overload;
-    function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
-    // UTF8-ANSI编码转换
-    function ExtractHtmlTagValues(const HtmlText: string;
-      TagName, AttribName: string; var Values: TStringList): integer;
-    // 取得HTML标签对应值
-    function GetAttributeByName(const HtmlText: string;
-      TagName, AttribName, KnownAttrName, KnowAttrValue: string): string;
-    // 用已知的属性值取另外一个属性值
+
+    function PlaceOrder(curUser: TBuyer; curItem: TStoreItem): string;
+    // 下订单的过程
+    procedure ShowError; // 错误提示
 
   end;
 
@@ -80,7 +82,7 @@ end;
 procedure TWebAccess.Execute; // 考虑使用多线程，异步
 begin
   try
-    PlaceOrder;
+    // PlaceOrder;
   except
     on E: Exception do
     begin
@@ -94,6 +96,7 @@ procedure TWebAccess.InitHTTP;
 begin
   FIdHTTP := TIdHTTP.Create();
   FCookie := TIdCookieManager.Create();
+  FOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create();
 
   FIdHTTP.CookieManager := FCookie;
   FIdHTTP.AllowCookies := True;
@@ -103,25 +106,76 @@ end;
 
 procedure TWebAccess.InitCookies;
 var
-  URL : TIdURI;
+  Domain: TIdURI;
 begin
   // 登陆取得Cookie，然后添加必要内容
-  URL.Create('nike.com');
-  FCookie.AddServerCookie('sth=value', URL);
+  FCookie := TIdCookieManager.Create();
+  Domain := TIdURI.Create('nike.com');
+  FCookie.AddServerCookie('sth=value', Domain);
 end;
 
-procedure TWebAccess.PlaceOrder;
+function TWebAccess.PlaceOrder(curUser: TBuyer; curItem: TStoreItem): string;
+// 临时
+var
+  Params: TStrings;
+  i: integer;
+
 begin
   // 登陆
   // 获取目标页面
   // 获取目标状态
   // 加入购物车
+
+  // 临时
+  InitHTTP;
+  InitCookies;
+  FOpenSSL.SSLOptions.Method := sslvSSLv3;
+  FIdHTTP.IOHandler := FOpenSSL;
+  FIdHTTP.AllowCookies := True;
+
+  // REQ HEADER
+  FIdHTTP.Request.UserAgent :=
+    'Mozilla/5.0 (Windows NT 6.1; rv:34.0) Gecko/20100101 Firefox/34.0';
+  FIdHTTP.Request.Accept :=
+    'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
+  FIdHTTP.Request.AcceptLanguage := 'en-us,zh-cn;q=0.7,en;q=0.3';
+  // FIdHTTP.Request.AcceptEncoding := 'gzip, deflate';
+  FIdHTTP.Request.Connection := 'keep-alive';
+
+  Params := TStringList.Create;
+  Params.Add('login=' + curUser.StoreAccount);
+  Params.Add('rememberMe=false');
+  Params.Add('password=' + curUser.StorePassword);
+
+  try
+    FIdHTTP.Post
+      ('https://www.nike.com/profile/login?Content-Locale=zh_CN', Params);
+  except
+    on E: Exception do
+    begin
+      ShowMessage('ERR: Can''t Login.');
+      Result := 'Not Logged In.' + E.Message;
+    end;
+  end;
+
+  FIdHTTP.Request.Referer := 'http://store.nike.com/cn/zh_cn/pd/';
+
+  try
+    Result := FIdHTTP.Get
+      ('http://store.nike.com/cn/zh_cn/pd/lebron-12-ep-%E7%AF%AE%E7%90%83%E9%9E%8B/pid-10091562/pgid-10284314');
+  except
+    on E: Exception do
+    begin
+      ShowMessage('ERR: Can''t Order.');
+      Result := 'Not Ordered.' + E.Message;
+    end;
+  end;
 end;
 
 procedure TWebAccess.ShowError;
 begin
   // Form1.Memo1.Lines.Add( '（' + IntToStr(FUser.ID) + '）' + FUser.UserName + '：' + TempMsg);
-  Application.MessageBox(FTempInfo, PChar('ERROR'), 0);
+  Application.MessageBox(Pchar(FTempInfo), Pchar('ERROR'), 0);
 end;
 
 function TWebAccess.HTTPGetAction(URL: string; MaxRetryTime: integer): string;
@@ -167,10 +221,10 @@ begin
         Exit;
       FIdHTTP.IOHandler := FOpenSSL;
       FIdHTTP.Post(URL, PostReqData, ResponseData);
-      SetLength(Result, ResponseData); // SetLength()设定数组长度
+      SetLength(Result, ResponseData.Size); // SetLength()设定数组长度
       ResponseData.Position := 0;
 
-      Result := PChar(ResponseData.Memory); // 强制指定为字符型指针，并返回该地址内容
+      Result := Pchar(ResponseData.Memory); // 强制指定为字符型指针，并返回该地址内容
     except
       Dec(MaxRetryTime);
       if MaxRetryTime <= 0 then
@@ -202,7 +256,7 @@ begin
   Result := s;
 end;
 
-function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
+function TWebAccess.DecodeUTF8toAnsi(const UString: UTF8String): WideString;
 var
   lenSrc, lenDst: integer;
 begin
@@ -215,7 +269,7 @@ begin
     Pointer(Result), lenDst);
 end;
 
-function GetAttributeByName(const HtmlText: string;
+function TWebAccess.GetAttributeByName(const HtmlText: string;
   TagName, AttribName, KnownAttrName, KnowAttrValue: string): string;
   function FindFirstCharAfterSpace(const Line: string;
     StartPos: integer): integer;
@@ -375,7 +429,7 @@ begin
   end;
 end;
 
-function ExtractHtmlTagValues(const HtmlText: string;
+function TWebAccess.ExtractHtmlTagValues(const HtmlText: string;
   TagName, AttribName: string; var Values: TStringList): integer;
   function FindFirstCharAfterSpace(const Line: string;
     StartPos: integer): integer;
@@ -512,8 +566,9 @@ end;
 function GetValByName(s, Sub: string): string;
 var
   EleS, EleE, iPos: integer;
-  ELeStr, ValSt: String;
+  ELeStr, ValSt: string;
   St, Ct: integer;
+
   function FindEleRange(str: string; front: Boolean; posi: integer): integer;
   var
     i: integer;
@@ -537,6 +592,7 @@ var
         end;
     end;
   end;
+
   function FindEnd(str: string; posi: integer): integer;
   var
     i: integer;
@@ -579,7 +635,7 @@ begin
   Result := Copy(ELeStr, St, Ct);
 end;
 
-// 三、如何取得网页中的所有连接，对代码做修改你也可以实现查找所有图片等等
+// 如何取得网页中的所有连接，对代码做修改你也可以实现查找所有图片等等
 function TWebAccess.GetURLList(Data: String): TStringList;
 var
   i: integer;
