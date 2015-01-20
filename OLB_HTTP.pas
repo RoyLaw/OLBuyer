@@ -122,11 +122,7 @@ var
   bufHTML: string;
   bufLinks: TStringList;
   bufLinkAmount: integer;
-<<<<<<< HEAD
   bufResult: string;
-=======
-  tempResult: string;
->>>>>>> origin/master
 
 begin
   // µÇÂ½
@@ -169,23 +165,10 @@ begin
   FIdHTTP.Request.Referer := 'http://store.nike.com/cn/zh_cn/pd/';
 
   try
-<<<<<<< HEAD
     bufHTML := '';
     bufLinkAmount := 0;
     bufHTML := FIdHTTP.Get
       ('http://store.nike.com/cn/zh_cn/pd/lebron-12-ep-%E7%AF%AE%E7%90%83%E9%9E%8B/pid-10091562/pgid-10284314');
-=======
-    tempResult := '';
-    bufHTML := FIdHTTP.Get
-      ('http://store.nike.com/cn/zh_cn/pd/lebron-12-ep-%E7%AF%AE%E7%90%83%E9%9E%8B/pid-10091562/pgid-10284314');
-    bufLinks := TStringList.Create;
-    bufLinkAmount := ExtractHtmlTagValues(bufHTML, 'A', 'HREF', bufLinks);
-    for i := 0 to bufLinkAmount - 1 do
-    begin
-      tempResult := tempResult + bufLinks[i] + #13#10;
-    end;
-    Result := tempResult;
->>>>>>> origin/master
   except
     on E: Exception do
     begin
@@ -193,7 +176,6 @@ begin
       Result := 'Not Ordered.' + E.Message;
     end;
   end;
-<<<<<<< HEAD
 
   if bufHTML <> '' then
   begin
@@ -207,8 +189,6 @@ begin
       bufResult := bufResult + bufLinks[i] + #13#10;
     Result := bufResult;
   end;
-=======
->>>>>>> origin/master
 end;
 
 procedure TWebAccess.ShowError;
