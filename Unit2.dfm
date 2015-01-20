@@ -73,7 +73,10 @@ object Form2: TForm2
     Height = 201
     Lines.Strings = (
       'Memo1')
+<<<<<<< HEAD
     ScrollBars = ssVertical
+=======
+>>>>>>> origin/master
     TabOrder = 3
   end
   object Button1: TButton

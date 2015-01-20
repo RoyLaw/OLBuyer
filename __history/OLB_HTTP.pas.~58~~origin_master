@@ -42,14 +42,6 @@ type
       MaxRetryTime: integer): string; // HTTP POST
     function DeleteHtmlTag(HtmlSource: string): string; // 删除HTML标签，提取网页内容
     function GetURLList(Data: String): TStringList;
-    function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
-    // UTF8-ANSI编码转换
-    function ExtractHtmlTagValues(const HtmlText: string;
-      TagName, AttribName: string; var Values: TStringList): integer;
-    // 取得HTML标签对应值
-    function GetAttributeByName(const HtmlText: string;
-      TagName, AttribName, KnownAttrName, KnowAttrValue: string): string;
-    // 用已知的属性值取另外一个属性值
 
   protected
     { Protected declarations }
@@ -64,6 +56,15 @@ type
     function PlaceOrder(curUser: TBuyer; curItem: TStoreItem): string;
     // 下订单的过程
     procedure ShowError; // 错误提示
+
+    function DecodeUTF8toAnsi(const UString: UTF8String): WideString;
+    // UTF8-ANSI编码转换
+    function ExtractHtmlTagValues(const HtmlText: string;
+      TagName, AttribName: string; var Values: TStringList): integer;
+    // 取得HTML标签对应值
+    function GetAttributeByName(const HtmlText: string;
+      TagName, AttribName, KnownAttrName, KnowAttrValue: string): string;
+    // 用已知的属性值取另外一个属性值
 
   end;
 
@@ -119,14 +120,6 @@ function TWebAccess.PlaceOrder(curUser: TBuyer; curItem: TStoreItem): string;
 var
   Params: TStrings;
   i: integer;
-  bufHTML: string;
-  bufLinks: TStringList;
-  bufLinkAmount: integer;
-<<<<<<< HEAD
-  bufResult: string;
-=======
-  tempResult: string;
->>>>>>> origin/master
 
 begin
   // 登陆
@@ -169,23 +162,8 @@ begin
   FIdHTTP.Request.Referer := 'http://store.nike.com/cn/zh_cn/pd/';
 
   try
-<<<<<<< HEAD
-    bufHTML := '';
-    bufLinkAmount := 0;
-    bufHTML := FIdHTTP.Get
+    Result := FIdHTTP.Get
       ('http://store.nike.com/cn/zh_cn/pd/lebron-12-ep-%E7%AF%AE%E7%90%83%E9%9E%8B/pid-10091562/pgid-10284314');
-=======
-    tempResult := '';
-    bufHTML := FIdHTTP.Get
-      ('http://store.nike.com/cn/zh_cn/pd/lebron-12-ep-%E7%AF%AE%E7%90%83%E9%9E%8B/pid-10091562/pgid-10284314');
-    bufLinks := TStringList.Create;
-    bufLinkAmount := ExtractHtmlTagValues(bufHTML, 'A', 'HREF', bufLinks);
-    for i := 0 to bufLinkAmount - 1 do
-    begin
-      tempResult := tempResult + bufLinks[i] + #13#10;
-    end;
-    Result := tempResult;
->>>>>>> origin/master
   except
     on E: Exception do
     begin
@@ -193,22 +171,6 @@ begin
       Result := 'Not Ordered.' + E.Message;
     end;
   end;
-<<<<<<< HEAD
-
-  if bufHTML <> '' then
-  begin
-    bufLinks := TStringList.Create;
-    bufLinkAmount := ExtractHtmlTagValues(bufHTML, 'option', 'value', bufLinks);
-    bufResult := '';
-  end;
-  if bufLinkAmount > 0 then
-  begin
-    for i := 0 to bufLinkAmount - 1 do
-      bufResult := bufResult + bufLinks[i] + #13#10;
-    Result := bufResult;
-  end;
-=======
->>>>>>> origin/master
 end;
 
 procedure TWebAccess.ShowError;
