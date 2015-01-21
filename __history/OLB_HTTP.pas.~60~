@@ -122,7 +122,6 @@ var
   bufHTML: string;
   bufLinks: TStringList;
   bufLinkAmount: integer;
-  bufResult: string;
 
 begin
   // µÇÂ½
@@ -178,17 +177,9 @@ begin
   end;
 
   if bufHTML <> '' then
-  begin
-    bufLinks := TStringList.Create;
-    bufLinkAmount := ExtractHtmlTagValues(bufHTML, 'option', 'value', bufLinks);
-    bufResult := '';
-  end;
-  if bufLinkAmount > 0 then
-  begin
-    for i := 0 to bufLinkAmount - 1 do
-      bufResult := bufResult + bufLinks[i] + #13#10;
-    Result := bufResult;
-  end;
+    bufLinkAmount := ExtractHtmlTagValues(bufHTML, 'A', 'HREF', bufLinks);
+  if buflinkamount>0 then
+
 end;
 
 procedure TWebAccess.ShowError;

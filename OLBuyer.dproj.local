@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899/12/30 00:00:00.000.051,=C:\Delphi_Projects\OLBuyer\Unit2.pas</Transaction>
-    <Transaction>1899/12/30 00:00:00.000.508,C:\Delphi_Projects\OLBuyer\Unit2.pas=C:\Delphi_Projects\OLBuyer\HTTP.pas</Transaction>
-    <Transaction>1899/12/30 00:00:00.000.407,C:\Users\Roy\Documents\GitHub\OLBuyer\Unit1.pas=C:\Users\Roy\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899/12/30 00:00:00.000.358,C:\Users\Roy\Documents\GitHub\OLBuyer\OLBuyer.dproj=C:\Users\Roy\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
-    <Transaction>1899/12/30 00:00:00.000.894,=C:\Users\Roy\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899/12/30 00:00:00.000.083,C:\Delphi_Projects\OLBuyer\HTTP.pas=C:\Delphi_Projects\OLBuyer\OLB_HTTP.pas</Transaction>
-    <Transaction>1899/12/30 00:00:00.000.359,=C:\Delphi_Projects\OLBuyer\Unit2.pas</Transaction>
-    <Transaction>1899/12/30 00:00:00.000.407,C:\Users\Roy\Documents\GitHub\OLBuyer\Unit1.dfm=C:\Users\Roy\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>2015/01/13 17:17:05.000.800,=C:\Delphi_Projects\OLBuyer\Unit2.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.358,C:\Users\Roy\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\Roy\Documents\GitHub\OLBuyer\OLBuyer.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.359,=C:\Delphi_Projects\OLBuyer\Unit2.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.407,C:\Users\Roy\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Users\Roy\Documents\GitHub\OLBuyer\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.083,C:\Delphi_Projects\OLBuyer\OLB_HTTP.pas=C:\Delphi_Projects\OLBuyer\HTTP.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.051,=C:\Delphi_Projects\OLBuyer\Unit2.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.894,=C:\Users\Roy\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.407,C:\Users\Roy\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Users\Roy\Documents\GitHub\OLBuyer\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.800,=C:\Delphi_Projects\OLBuyer\Unit2.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.508,C:\Delphi_Projects\OLBuyer\HTTP.pas=C:\Delphi_Projects\OLBuyer\Unit2.pas</Transaction>
   </Transactions>
 </BorlandProject>
